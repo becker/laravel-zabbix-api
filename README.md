@@ -10,14 +10,6 @@ Enter in your Laravel application folder and require the package:
 composer require becker/laravel-zabbix-api
 ```
 
-### Publish the files
-
-```php
-php artisan vendor:publish
-```
-This will create the ``config/zabbix.php`` file.
-
-
 ### Register the Service Provider
 
 Open up the ``config/app.php``and register the new Service Provider:
@@ -33,6 +25,14 @@ Becker\Zabbix\ZabbixServiceProvider::class,
 
 //...
 ```
+
+### Publish the files
+
+```php
+php artisan vendor:publish
+```
+This will create the ``config/zabbix.php`` file.
+
 
 ### Define your Zabbix Server configurations
 
