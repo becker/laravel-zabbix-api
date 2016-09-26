@@ -16,7 +16,7 @@ class ZabbixServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__.'/config/zabbix.php' => config_path('zabbix.php'),
-        ]);
+        ], 'zabbix');
     }
 
     /**
@@ -26,8 +26,8 @@ class ZabbixServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['zabbix'] = $this->app->share(function($app) {
-            return new ZabbixApi(config('zabbix.host'),config('zabbix.username'),config('zabbix.password'));
+	$this->app->singleton('zabbix', function ($app) {
+            return new ZabbixApi($app['config']['zabbix.host'],$app['config']['zabbix.username'],$app['config']['zabbix.password']);
         });
     }
 }

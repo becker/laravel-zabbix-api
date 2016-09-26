@@ -10,7 +10,7 @@ return [
     | This specifies the Zabbix Server host that Laravel will connect.
     |
     */
-    'host' => 'http://' . env('ZABBIX_HOST', 'localhost') . '/api_jsonrpc.php',
+    'host' => env('ZABBIX_HOST', 'localhost') . '/api_jsonrpc.php',
     
     /*
     |--------------------------------------------------------------------------
@@ -19,8 +19,6 @@ return [
     |
     | This specifies the Zabbix Server username that Laravel will use to
     | authenticate.
-    |
-    */
     |
     */
     'username' => env('ZABBIX_USERNAME', 'admin'),
@@ -54,5 +52,5 @@ return [
     | password
     |
     */
-    'http_username' => env('ZABBIX_HTTP_PASSWORD')
+    'http_password' => env('ZABBIX_HTTP_PASSWORD')
 ];

@@ -2,13 +2,8 @@
 
 namespace Becker\Zabbix;
 
-/**
- * @brief   Exception class for ZabbixApi namespace.
- */
+use Becker\Zabbix\ZabbixException as Exception;
 
-class Exception extends \Exception
-{
-}
 
 /**
  * @brief   Abstract class for the Zabbix API.
@@ -12733,5 +12728,3 @@ abstract class ZabbixApiAbstract
     
 
 }
-
-?>
