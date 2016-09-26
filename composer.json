@@ -13,9 +13,7 @@
             "email": "vinicius@becker.eti.br"
         }
     ],
-    "require": {
-        "illuminate/support": "~5"
-    },
+    "require": {},
     "require-dev": {
         "phpunit/phpunit": "~5.0"
     },
