@@ -34,6 +34,7 @@ php artisan vendor:publish
 This will create the ``config/zabbix.php`` file.
 
 
+
 ### Define your Zabbix Server configurations
 
 At your ``.env`` file, define the new Zabbix parameters:
