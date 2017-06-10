@@ -100,6 +100,9 @@ abstract class ZabbixApiAbstract
 
     public function __construct($apiUrl='', $user='', $password='', $httpUser='', $httpPassword='', $authToken='', $sslContext=NULL)
     {
+        $this->setApiUrl(env('ZABBIX_HOST'));
+        if (!$user) $user = env('ZABBIX_USERNAME');
+        if (!$password) $password = env('ZABBIX_PASSWORD');
         if($apiUrl)
             $this->setApiUrl($apiUrl);
 
