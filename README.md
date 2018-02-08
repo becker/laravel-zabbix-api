@@ -14,7 +14,7 @@ composer require becker/laravel-zabbix-api
 
 #### Register the Service Provider
 
-> You can skip this step if you are using Laravel 5.5 or higher. The package is automatically added to the Package Service Providers section of `app.php` file, due to the package auto-discovery feature.
+> **NOTE:** You can skip this step if you are using Laravel 5.5 or higher. The package is automatically registered, due to the package auto-discovery feature.
 
 Open up the ``config/app.php``and register the new Service Provider:
 
@@ -40,14 +40,14 @@ This will create the ``config/zabbix.php`` file.
 
 #### Define your Zabbix Server configurations
 
-At your ``.env`` file, define the new Zabbix parameters, **without** any final forward slash:
+At your ``.env`` file, define the new Zabbix parameters. 
 
 ```php
 ZABBIX_HOST=http://your.zabbix.url
 ZABBIX_USERNAME=username
 ZABBIX_PASSWORD=password
 ```
-
+> **IMPORTANT:** The `ZABBIX_HOST` parameter **SHOULD NOT** contain any trailing slashes at the end.
 
 #### Use it in your Controller
 
