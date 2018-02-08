@@ -21,5 +21,12 @@
         "psr-4": {
             "Becker\\Zabbix\\": "src"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Becker\\Zabbix\\ZabbixServiceProvider"
+            ]
+        }
     }
 }
