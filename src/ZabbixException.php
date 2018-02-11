@@ -2,7 +2,9 @@
 
 namespace Becker\Zabbix;
 
-class ZabbixException extends \Exception
+use Exception;
+
+class ZabbixException extends Exception
 {
     //
 }
