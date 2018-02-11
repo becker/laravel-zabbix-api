@@ -16,142 +16,110 @@ abstract class ZabbixApiAbstract
      * @brief   Anonymous API functions.
      */
 
-    static private $anonymousFunctions = array(
+    static protected $anonymousFunctions = [
         'apiinfo.version'
-    );
+    ];
 
     /**
      * @brief   Boolean if requests/responses should be printed out (JSON).
      */
 
-    private $printCommunication = FALSE;
+    protected $printCommunication = false;
 
     /**
      * @brief   API URL.
      */
 
-    private $apiUrl = '';
+    protected $apiUrl;
 
     /**
      * @brief   Default params.
      */
 
-    private $defaultParams = array();
+    protected $defaultParams = [];
 
     /**
      * @brief   Auth string.
      */
 
-    private $auth = '';
+    protected $auth;
 
     /**
      * @brief   Request ID.
      */
 
-    private $id = 0;
+    protected $id = 0;
 
     /**
      * @brief   Request array.
      */
 
-    private $request = array();
+    protected $request = [];
 
     /**
      * @brief   JSON encoded request string.
      */
 
-    private $requestEncoded = '';
+    protected $requestEncoded;
 
     /**
      * @brief   JSON decoded response string.
      */
 
-    private $response = '';
+    protected $response;
 
     /**
      * @brief   Response object.
      */
 
-    private $responseDecoded = NULL;
+    protected $responseDecoded = null;
 
     /**
      * @brief   Extra HTTP headers.
      */
 
-    private $extraHeaders = '';
+    protected $extraHeaders;
 
     /**
      * @brief   SSL context.
      */
 
-    private $sslContext = array();
+    protected $sslContext = [];
+
+    /** 
+     * @brief   Verify SSL certificate
+     */
+
+    protected $verifySsl;
 
     /**
      * @brief   Class constructor.
      *
-     * @param   $apiUrl         API url (e.g. http://FQDN/zabbix/api_jsonrpc.php)
+     * @param   $apiUrl         API url (e.g. http://FQDN/zabbix/api_jsonrpc.php).
      * @param   $user           Username for Zabbix API.
      * @param   $password       Password for Zabbix API.
      * @param   $httpUser       Username for HTTP basic authorization.
      * @param   $httpPassword   Password for HTTP basic authorization.
-     * @param   $authToken      Already issued auth token (e.g. extracted from cookies)
-     * @param   $sslContext     SSL context for SSL-enabled connections
+     * @param   $authToken      Already issued auth token (e.g. extracted from cookies).
+     * @param   $sslContext     SSL context for SSL-enabled connections.
+     * @param   $verifySsl      Verify SSL peer name.
      */
 
-    public function __construct($apiUrl='', $user='', $password='', $httpUser='', $httpPassword='', $authToken='', $sslContext=NULL)
+    public function __construct($apiUrl, $user, $password, $httpUser, $httpPassword, $authToken, $sslContext, $verifySsl)
     {
-        if($apiUrl)
-            $this->setApiUrl($apiUrl);
+        $this->apiUrl = $apiUrl;
+
+        $this->sslContext = $sslContext;
+
+        $this->verifySsl = $verifySsl;
 
         if ($httpUser && $httpPassword)
             $this->setBasicAuthorization($httpUser, $httpPassword);
 
-        if($sslContext)
-            $this->setSslContext($sslContext);
-
         if ($authToken)
-            $this->setAuthToken($authToken);
+            $this->authToken = $authToken;
         elseif($user && $password)
             $this->userLogin(array('user' => $user, 'password' => $password));
-    }
-
-    /**
-     * @brief   Returns the API url for all requests.
-     *
-     * @retval  string  API url.
-     */
-
-    public function getApiUrl()
-    {
-        return $this->apiUrl;
-    }
-
-    /**
-     * @brief   Sets the API url for all requests.
-     *
-     * @param   $apiUrl     API url.
-     *
-     * @retval  ZabbixApiAbstract
-     */
-
-    public function setApiUrl($apiUrl)
-    {
-        $this->apiUrl = $apiUrl;
-        return $this;
-    }
-
-    /**
-     * @brief   Sets the API authorization ID.
-     *
-     * @param   $authToken     API auth ID.
-     *
-     * @retval  ZabbixApiAbstract
-     */
-
-    public function setAuthToken($authToken)
-    {
-        $this->authToken = $authToken;
-        return $this;
     }
 
     /**
@@ -170,22 +138,6 @@ abstract class ZabbixApiAbstract
         else
             $this->extraHeaders = '';
 
-        return $this;
-    }
-
-    /**
-     * @brief   Sets the context for SSL-enabled connections.
-     *
-     * See http://php.net/manual/en/context.ssl.php for more informations.
-     *
-     * @param   $context    Array with the SSL context
-     *
-     * @retval  ZabbixApiAbstract
-     */
-
-    public function setSslContext($context)
-    {
-        $this->sslContext = $context;
         return $this;
     }
 
@@ -282,6 +234,19 @@ abstract class ZabbixApiAbstract
                 'content' => $this->requestEncoded
             )
         );
+        
+        if($this->isSecure($this->apiUrl)) {
+
+            $ssl = array(
+                'ssl' => array(
+                    'verify_peer' => $this->verifySsl
+                )
+            );
+
+            $context = array_merge($context, $ssl);
+
+        }
+
         if($this->sslContext)
             $context['ssl'] = $this->sslContext;
 
@@ -289,9 +254,9 @@ abstract class ZabbixApiAbstract
         $streamContext = stream_context_create($context);
 
         // get file handler
-        $fileHandler = @fopen($this->getApiUrl(), 'rb', false, $streamContext);
+        $fileHandler = @fopen($this->apiUrl, 'rb', false, $streamContext);
         if(!$fileHandler)
-            throw new Exception('Could not connect to "'.$this->getApiUrl().'"');
+            throw new Exception('Could not connect to "'.$this->apiUrl.'"');
 
         // get response
         $this->response = @stream_get_contents($fileHandler);
@@ -302,7 +267,7 @@ abstract class ZabbixApiAbstract
 
         // response verification
         if($this->response === FALSE)
-            throw new Exception('Could not read data from "'.$this->getApiUrl().'"');
+            throw new Exception('Could not read data from "'.$this->apiUrl.'"');
 
         // decode response
         $this->responseDecoded = json_decode($this->response);
@@ -318,6 +283,18 @@ abstract class ZabbixApiAbstract
             return $this->convertToAssociatveArray($this->responseDecoded->result, $resultArrayKey);
         else
             return $this->responseDecoded->result;
+    }
+
+    /** 
+     * @brief   Verify if requested URL is made by HTTPS
+     * 
+     * @retval  boolean
+     */
+    protected function isSecure($url)
+    {
+        $url = parse_url($url);
+
+        return $url['scheme'] == 'https';             
     }
 
     /**
@@ -351,7 +328,7 @@ abstract class ZabbixApiAbstract
      * @retval  associative Array
      */
 
-    private function convertToAssociatveArray($objectArray, $useObjectProperty)
+    protected function convertToAssociatveArray($objectArray, $useObjectProperty)
     {
         // sanity check
         if(count($objectArray) == 0 || !property_exists($objectArray[0], $useObjectProperty))
@@ -392,7 +369,7 @@ abstract class ZabbixApiAbstract
      * @retval  Array
      */
 
-    private function getRequestParamsArray($params)
+    protected function getRequestParamsArray($params)
     {
         // if params is a scalar value, turn it into an array
         if(is_scalar($params))
