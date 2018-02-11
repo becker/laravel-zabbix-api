@@ -9,6 +9,4 @@ use Becker\Zabbix\ZabbixApiAbstract;
  */
 class ZabbixApi extends ZabbixApiAbstract
 {
-
-
 }

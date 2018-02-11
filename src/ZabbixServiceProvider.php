@@ -26,8 +26,17 @@ class ZabbixServiceProvider extends ServiceProvider
      */
     public function register()
     {
-	$this->app->singleton('zabbix', function ($app) {
-            return new ZabbixApi($app['config']['zabbix.host'],$app['config']['zabbix.username'],$app['config']['zabbix.password']);
+        $this->app->singleton('zabbix', function ($app) {
+            return new ZabbixApi(
+                $apiUrl = $app['config']['zabbix.host'],
+                $user = $app['config']['zabbix.username'],
+                $password = $app['config']['zabbix.password'],
+                $httpUser = $app['config']['zabbix.http_username'],
+                $httpPassword = $app['config']['zabbix.http_password'],
+                $authToken = $app['config']['zabbix.authToken'],
+                $sslContext = $app['config']['zabbix.sslContext'],
+                $checkSsl = $app['config']['zabbix.checkSsl']
+            );
         });
     }
 }
