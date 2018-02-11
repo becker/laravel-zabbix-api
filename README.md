@@ -38,16 +38,16 @@ php artisan vendor:publish --tag=zabbix
 This will create the ``config/zabbix.php`` file.
 
 
-#### Define your Zabbix Server configurations
+#### Configure your Zabbix Server settings
 
-At your ``.env`` file, define the new Zabbix parameters. 
+At your ``.env`` file, define the new Zabbix settings:
 
 ```php
 ZABBIX_HOST=http://your.zabbix.url
 ZABBIX_USERNAME=username
 ZABBIX_PASSWORD=password
 ```
-> **IMPORTANT:** The `ZABBIX_HOST` parameter **SHOULD NOT** contain any trailing slashes at the end.
+> **IMPORTANT:** The `ZABBIX_HOST` parameter **SHOULD NOT** contain any trailing slashes at the end. For a list of all available environment variables, check the `config/zabbix.php` file.
 
 #### Use it in your Controller
 
@@ -88,7 +88,17 @@ class TestController extends Controller
      */
     public function index()
     {
-        return $this->zabbix->hostgroupGet(['output' => 'extend']);
+        return $this->zabbix->hostgroupGet([
+            'output' => 'extend'
+        ]);
+
+        // Or, if you want to use Laravel Collections
+
+        return collect($this->zabbix->hostgroupGet())->map(function ($item) {
+            return [
+                'name' => strtoupper($item->name)
+            ];
+        });
     }
 }
 ```
