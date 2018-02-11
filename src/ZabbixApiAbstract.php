@@ -110,7 +110,7 @@ abstract class ZabbixApiAbstract
 
         $this->sslContext = $sslContext;
 
-        $this->verifySsl = $checkSsl;
+        $this->checkSsl = $checkSsl;
 
         if ($httpUser && $httpPassword) {
             $this->setBasicAuthorization($httpUser, $httpPassword);
@@ -245,7 +245,7 @@ abstract class ZabbixApiAbstract
         if ($this->isSecure($this->apiUrl)) {
             $ssl = array(
                 'ssl' => array(
-                    'verify_peer' => $this->verifySsl
+                    'verify_peer' => $this->checkSsl
                 )
             );
 
