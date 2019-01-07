@@ -931,6 +931,39 @@ abstract class ZabbixApiAbstract
         // request
         return $this->request('alert.get', $params, $arrayKeyProperty, $auth);
     }
+
+    /**
+     * @brief   Reqeusts the Zabbix API and returns the response of the API
+     *          method problem.get.
+     *
+     * The $params Array can be used, to pass parameters to the Zabbix API.
+     * For more informations about these parameters, check the Zabbix API
+     * documentation at https://www.zabbix.com/documentation/.
+     *
+     * The $arrayKeyProperty can be used to get an associatve instead of an
+     * indexed array as response. A valid value for the $arrayKeyProperty is
+     * is any property of the returned JSON objects (e.g. name, host,
+     * hostid, graphid, screenitemid).
+     *
+     * @param   $params             Zabbix API parameters.
+     * @param   $arrayKeyProperty   Object property for key of array.
+     *
+     * @retval  stdClass
+     *
+     * @throws  Exception
+     */
+
+    public function problemGet($params=array(), $arrayKeyProperty='')
+    {
+        // get params array for request
+        $params = $this->getRequestParamsArray($params);
+
+        // check if we've to authenticate
+        $auth = in_array('problem.get', self::$anonymousFunctions) ? false : true;
+
+        // request
+        return $this->request('problem.get', $params, $arrayKeyProperty, $auth);
+    }
     
     /**
      * @brief   Reqeusts the Zabbix API and returns the response of the API
