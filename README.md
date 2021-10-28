@@ -4,6 +4,8 @@ This package provides a Zabbix API library for Laravel Framework. It uses the Ph
 
 > **NOTE:** This version was tested with Zabbix Server 3.0.* only. Not sure if it works with other versions as well.
 
+<a href="https://www.buymeacoffee.com/vbecker" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 36px !important;width: 130px !important;" ></a>
+
 #### Installation
 
 To get started, you should add the `becker/laravel-zabbix-api` Composer dependency to your project:
